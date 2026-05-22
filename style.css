@@ -48,6 +48,7 @@ body {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 18px;
+  gap: 10px;
 }
 
 .top-header h1 {
@@ -58,6 +59,10 @@ body {
 .small-text {
   color: var(--muted);
   font-size: 13px;
+}
+
+.auth-box {
+  display: none;
 }
 
 .glass,
@@ -127,14 +132,6 @@ body {
 
 .mini-card h3 {
   font-size: 20px;
-}
-
-.income-glow {
-  box-shadow: 0 0 25px rgba(0, 212, 106, 0.12);
-}
-
-.expense-glow {
-  box-shadow: 0 0 25px rgba(255, 77, 94, 0.12);
 }
 
 .income-glow h3 {
@@ -261,23 +258,10 @@ button {
   padding: 14px;
   border-radius: 16px;
   margin-bottom: 10px;
-  animation: popIn 0.2s ease;
 }
 
 .light .transaction-item {
   background: #f2f4f7;
-}
-
-@keyframes popIn {
-  from {
-    transform: scale(0.98);
-    opacity: 0;
-  }
-
-  to {
-    transform: scale(1);
-    opacity: 1;
-  }
 }
 
 .transaction-item.income {
