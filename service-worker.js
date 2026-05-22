@@ -1,4 +1,4 @@
-const CACHE_NAME = "monxtracker-v1";
+const CACHE_NAME = "monxtracker-v3";
 
 const filesToCache = [
   "./",
