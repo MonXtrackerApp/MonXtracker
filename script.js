@@ -1,3 +1,13 @@
+const CACHE_NAME = "monxtracker-v3";
+
+const filesToCache = [
+  "./",
+  "./index.html",
+  "./style.css",
+  "./script.js",
+  "./manifest.json"
+];
+
 let transactions = JSON.parse(localStorage.getItem("transactions")) || [];
 let initialBalance = Number(localStorage.getItem("initialBalance")) || 0;
 let monthlyBudget = Number(localStorage.getItem("monthlyBudget")) || 0;
