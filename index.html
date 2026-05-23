@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>MonXtracker</title>
+
+  <link rel="stylesheet" href="style.css" />
+  <link rel="manifest" href="manifest.json" />
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+  <div class="app">
+
+    <header class="top-header">
+      <div>
+        <p class="small-text">Welcome back</p>
+        <h1>MonXtracker</h1>
+      </div>
+
+      <div class="header-actions">
+        <button id="logoutBtn" class="small-btn" style="display:none;">Logout</button>
+        <button class="icon-btn" id="themeToggle">🌙</button>
+      </div>
+    </header>
+
+    <main>
+
+      <!-- LOGIN PAGE -->
+      <section class="page active" id="authPage">
+        <div class="glass auth-card">
+          <h2>Login to MonXtracker</h2>
+          <p class="small-text">
+            Login to sync your money tracker across your phone and laptop.
+          </p>
+
+          <input type="email" id="emailInput" placeholder="Email" />
+          <input type="password" id="passwordInput" placeholder="Password" />
+
+          <button class="main-btn" id="loginEmailBtn">Login</button>
+          <button class="secondary-btn" id="signupEmailBtn">Create Account</button>
+          <button class="secondary-btn" id="googleLoginBtn">Continue with Google</button>
+        </div>
+      </section>
+
+      <!-- HOME PAGE -->
+      <section class="page" id="homePage">
+        <div class="balance-card glass">
+          <p class="small-text">Current Balance</p>
+          <h2 id="balance">RM 0.00</h2>
+
+          <div class="initial-box">
+            <input
+              type="text"
+              id="initialBalanceInput"
+              placeholder="Set / edit balance"
+              inputmode="decimal"
+              pattern="[0-9]*[.]?[0-9]*"
+            />
+            <button id="setBalanceBtn">Set</button>
+          </div>
+        </div>
+
+        <div class="summary-grid">
+          <div class="mini-card income-glow">
+            <p>Money In</p>
+            <h3 id="moneyIn">RM 0.00</h3>
+          </div>
+
+          <div class="mini-card expense-glow">
+            <p>Money Out</p>
+            <h3 id="moneyOut">RM 0.00</h3>
+          </div>
+        </div>
+
+        <div class="glass insight-card">
+          <p class="small-text">Smart Insight</p>
+          <h3 id="insightText">Start tracking your money today.</h3>
+        </div>
+
+        <div class="glass">
+          <div class="section-title">
+            <h3>Recent Transactions</h3>
+            <button onclick="showPage('historyPage')">View All</button>
+          </div>
+
+          <ul id="recentList"></ul>
+        </div>
+      </section>
+
+      <!-- ADD PAGE -->
+      <section class="page" id="addPage">
+        <div class="glass">
+          <h2>Add Transaction</h2>
+
+          <form id="transactionForm">
+            <div class="type-toggle">
+              <button type="button" class="type-btn active" data-type="income">
+                Money In
+              </button>
+
+              <button type="button" class="type-btn" data-type="expense">
+                Money Out
+              </button>
+            </div>
+
+            <input type="hidden" id="type" value="income" />
+
+            <label>Amount</label>
+            <input
+              type="text"
+              id="amount"
+              placeholder="Enter amount"
+              inputmode="decimal"
+              pattern="[0-9]*[.]?[0-9]*"
+              required
+            />
+
+            <label>Category</label>
+            <select id="category" required></select>
+
+            <label>Wallet</label>
+            <select id="wallet" required>
+              <option value="Cash">Cash</option>
+              <option value="Bank">Bank</option>
+              <option value="Touch n Go">Touch n Go</option>
+              <option value="Savings">Savings</option>
+              <option value="Card">Card</option>
+            </select>
+
+            <label>Notes</label>
+            <input type="text" id="note" placeholder="Add notes" />
+
+            <button class="main-btn" type="submit">
+              Save Transaction
+            </button>
+          </form>
+        </div>
+      </section>
+
+      <!-- ANALYTICS PAGE -->
+      <section class="page" id="analyticsPage">
+        <div class="glass">
+          <h2>Analytics</h2>
+
+          <div class="chart-box">
+            <h3>Weekly Spending</h3>
+            <canvas id="weeklyChart"></canvas>
+          </div>
+
+          <div class="chart-box">
+            <h3>Income vs Expense</h3>
+            <canvas id="incomeExpenseChart"></canvas>
+          </div>
+
+          <div class="chart-box">
+            <h3>Category Spending</h3>
+            <canvas id="categoryChart"></canvas>
+          </div>
+
+          <div class="chart-box">
+            <h3>Monthly Activity</h3>
+            <canvas id="monthlyChart"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <!-- BUDGET PAGE -->
+      <section class="page" id="budgetPage">
+        <div class="glass">
+          <h2>Monthly Budget</h2>
+
+          <div class="budget-input">
+            <input
+              type="text"
+              id="budgetInput"
+              placeholder="Set monthly budget"
+              inputmode="decimal"
+              pattern="[0-9]*[.]?[0-9]*"
+            />
+            <button id="setBudgetBtn">Set</button>
+          </div>
+
+          <div class="budget-card">
+            <p>Budget Used</p>
+            <h3 id="budgetStatus">RM 0.00 / RM 0.00</h3>
+
+            <div class="progress-track">
+              <div id="budgetProgress" class="progress-fill"></div>
+            </div>
+
+            <p id="budgetWarning" class="small-text">No budget set yet.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- GOALS PAGE -->
+      <section class="page" id="goalsPage">
+        <div class="glass">
+          <h2>Savings Goal</h2>
+
+          <input type="text" id="goalName" placeholder="Goal name" />
+
+          <input
+            type="text"
+            id="goalTarget"
+            placeholder="Target amount"
+            inputmode="decimal"
+            pattern="[0-9]*[.]?[0-9]*"
+          />
+
+          <input
+            type="text"
+            id="goalSaved"
+            placeholder="Current saved amount"
+            inputmode="decimal"
+            pattern="[0-9]*[.]?[0-9]*"
+          />
+
+          <button class="main-btn" id="saveGoalBtn">
+            Save Goal
+          </button>
+
+          <div class="goal-card">
+            <p id="goalTitle">No goal yet</p>
+            <h3 id="goalAmount">RM 0.00 / RM 0.00</h3>
+
+            <div class="progress-track">
+              <div id="goalProgress" class="progress-fill goal-fill"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- HISTORY PAGE -->
+      <section class="page" id="historyPage">
+        <div class="glass">
+          <h2>Transaction History</h2>
+
+          <input
+            type="text"
+            id="searchInput"
+            placeholder="Search transactions"
+          />
+
+          <div class="filter-row">
+            <button onclick="setFilter('all')" class="filter-btn active">All</button>
+            <button onclick="setFilter('income')" class="filter-btn">In</button>
+            <button onclick="setFilter('expense')" class="filter-btn">Out</button>
+          </div>
+
+          <ul id="transactionList"></ul>
+        </div>
+      </section>
+
+      <!-- SETTINGS PAGE -->
+      <section class="page" id="settingsPage">
+        <div class="glass">
+          <h2>Settings</h2>
+
+          <button class="main-btn" onclick="exportCSV()">
+            Export CSV
+          </button>
+
+          <button class="danger-btn" onclick="clearAllData()">
+            Clear Cloud Data
+          </button>
+
+          <p class="small-text settings-note">
+            Your MonXtracker data is saved to your login account and can be used on multiple devices.
+          </p>
+        </div>
+      </section>
+
+    </main>
+
+    <nav class="bottom-nav">
+      <button onclick="showPage('homePage')" class="nav-btn active">
+        🏠
+        <span>Home</span>
+      </button>
+
+      <button onclick="showPage('addPage')" class="nav-btn">
+        ➕
+        <span>Add</span>
+      </button>
+
+      <button onclick="showPage('analyticsPage')" class="nav-btn">
+        📊
+        <span>Stats</span>
+      </button>
+
+      <button onclick="showPage('budgetPage')" class="nav-btn">
+        🎯
+        <span>Budget</span>
+      </button>
+
+      <button onclick="showPage('historyPage')" class="nav-btn">
+        🧾
+        <span>History</span>
+      </button>
+    </nav>
+
+  </div>
+
+  <script type="module" src="script.js"></script>
+</body>
+</html>
